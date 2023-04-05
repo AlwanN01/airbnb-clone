@@ -18,7 +18,7 @@ type Options = {
 
 export function createStore<
   State extends object,
-  Method extends TypeSetStateMethod<State> | object,
+  Method extends TypeSetState<State> | object,
   Action extends { type: String | keyof TypeSetState<State>; [key: string]: any }
 >(
   initState: State,
@@ -78,13 +78,13 @@ export function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_stor
   return store
 }
 
-export type TypeSetState<T, M = string> = {
+export type TypeSetState<T> = {
+  [K in keyof T as `set${Capitalize<string & K>}`]: (state: T[K]) => void
+}
+export type TypeSetStateStore<T, M> = {
   [K in keyof T as `set${Capitalize<string & K>}`]: `set${Capitalize<string & K>}` extends M
     ? unknown
     : (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void
-}
-export type TypeSetStateMethod<T> = {
-  [K in keyof T as `set${Capitalize<string & K>}`]: (state: T[K]) => void
 }
 
 function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
@@ -101,7 +101,7 @@ function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
       }
     }
   }
-  return defaultSetState as TypeSetState<T, M>
+  return defaultSetState as TypeSetStateStore<T, M>
 }
 
 function extractString(str: string) {
