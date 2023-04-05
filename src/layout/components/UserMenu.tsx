@@ -12,7 +12,7 @@ function UserMenu({}: Props) {
           Airbnb your home
         </div>
         <div
-          onClick={() => setIsOpen(prev => !prev)}
+          onClick={setIsOpen}
           className='grid cursor-pointer select-none grid-flow-col place-items-center gap-3 rounded-full border-[1px] border-neutral-200 p-4 transition hover:shadow-md md:py-1 md:pl-3 md:pr-2'>
           <AiOutlineMenu />
           <div className='hidden md:block'>

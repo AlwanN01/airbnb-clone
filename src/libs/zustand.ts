@@ -54,7 +54,7 @@ export function createStore<
               },
               set: setWithLogging,
               get,
-              ...setStateStore(initState, set, get),
+              ...setStateStore<State, keyof Method>(initState, set, get),
               ...handler!(setWithLogging, get)
             }
           })
@@ -78,11 +78,13 @@ export function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_stor
   return store
 }
 
-export type TypeSetState<T> = {
-  [K in keyof T as `set${Capitalize<string & K>}`]: (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void
+export type TypeSetState<T, M = string> = {
+  [K in keyof T as `set${Capitalize<string & K>}`]: `set${Capitalize<string & K>}` extends M
+    ? unknown
+    : (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void
 }
 
-function setStateStore<T extends object>(initstate: T, set: any, get: any) {
+function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
   let defaultSetState = {} as Record<string, (value: any) => void>
   for (const key in initstate) {
     if (key === 'state') continue
@@ -96,7 +98,7 @@ function setStateStore<T extends object>(initstate: T, set: any, get: any) {
       }
     }
   }
-  return defaultSetState as TypeSetState<T>
+  return defaultSetState as TypeSetState<T, M>
 }
 
 function extractString(str: string) {
