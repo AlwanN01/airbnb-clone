@@ -19,7 +19,7 @@ type Options = {
 export function createStore<
   State extends object,
   Method extends TypeSetState<State> | object,
-  Action extends { type: String | keyof TypeSetState<State>; [key: string]: any }
+  Action extends { type: String | keyof TypeSetState<State>; payload?: unknown; [key: string]: unknown }
 >(
   initState: State,
   handler?: HandlerStore<State, Method> | null,
