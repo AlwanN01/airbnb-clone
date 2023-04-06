@@ -1,8 +1,7 @@
 import { IconType } from 'react-icons'
 
-interface Props extends React.HtmlHTMLAttributes<HTMLButtonElement> {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string
-  disabled?: boolean
   outline?: boolean
   small?: boolean
   icon?: IconType

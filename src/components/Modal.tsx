@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { IoMdClose } from 'react-icons/io'
-import Button from '../Button'
+import Button from './Button'
 
 // import Button from "../Button";
 
 interface ModalProps {
   isOpen?: boolean
   onClose: () => void
-  onSubmit: () => void
+  onSubmit: () => Promise<void> | void
   title?: string
   body?: React.ReactElement
   footer?: React.ReactElement

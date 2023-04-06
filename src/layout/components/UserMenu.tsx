@@ -1,11 +1,11 @@
 'use client'
 import { AiOutlineMenu } from 'react-icons/ai'
 import Avatar from './Avatar'
-import { useUserMenu } from '@/hooks/useUserMenu'
 import MenuItem from './MenuItem'
+import { useState } from 'react'
 type Props = {}
 function UserMenu({}: Props) {
-  const { isOpen, setIsOpen } = useUserMenu()
+  const [isOpen, setIsOpen] = useState(false)
   return (
     <div className='relative'>
       <div className='flex flex-row items-center gap-3'>
@@ -13,7 +13,7 @@ function UserMenu({}: Props) {
           Airbnb your home
         </div>
         <div
-          onClick={setIsOpen}
+          onClick={() => setIsOpen(v => !v)}
           className='grid-col cursor-pointer select-none place-items-center gap-3 rounded-full border-[1px] border-neutral-200 p-4 transition hover:shadow-md md:py-1 md:pl-3 md:pr-2'>
           <AiOutlineMenu />
           <div className='hidden md:block'>
