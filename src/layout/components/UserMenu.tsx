@@ -24,8 +24,8 @@ function UserMenu({}: Props) {
       {isOpen && (
         <div className='absolute right-0 top-12 z-20 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-cmd md:w-3/4 '>
           <div className='cursor-pointer'>
-            <MenuItem onClick={() => {}} label='Login' />
-            <MenuItem onClick={() => {}} label='Signup' />
+            <MenuItem onClick={() => {}} label='Log In' />
+            <MenuItem onClick={() => {}} label='Sign Up' />
           </div>
         </div>
       )}

@@ -2,8 +2,8 @@
 import { create, type StoreApi, type UseBoundStore } from 'zustand'
 import { combine, devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import { Immutable, produce } from 'immer'
-import type { Draft } from 'immer'
+import { produce, type Immutable, type Draft } from 'immer'
+
 export type SetState<State> = (
   nextStateOrUpdater: State | Partial<State> | ((state: Draft<State>) => void),
   shouldReplace?: boolean | undefined,
@@ -34,15 +34,15 @@ export function createStore<
       devtools(
         immer(
           combine(initState, (set, get) => {
-            const setWithLogging = (value: Parameters<typeof set>[0]) => {
-              const key = Object.keys(value)
-              const values = Object.values(value)
-              return set(value, false, {
+            const setWithLogging = (nextStateOrUpdater: Parameters<typeof set>[0]) => {
+              const key = Object.keys(nextStateOrUpdater)
+              const values = Object.values(nextStateOrUpdater)
+              return set(nextStateOrUpdater, false, {
                 type:
                   key.length == 1
                     ? `set${key[0].charAt(0).toUpperCase() + key[0].slice(1)} to ${values[0]}`
-                    : typeof value == 'function'
-                    ? `set: ${extractString(value.toString())}`
+                    : typeof nextStateOrUpdater == 'function'
+                    ? `set: ${extractString(nextStateOrUpdater.toString())}`
                     : `set: ${key.join(' | ')}`
               })
             }
@@ -67,21 +67,36 @@ export function createStore<
 function isOptions(variable: any): variable is Options {
   return Object.prototype.toString.call(variable) === '[object Object]'
 }
-type WithSelectors<S> = S extends { getState: () => infer T } ? S & { use: { [K in keyof T]: () => T[K] } } : never
-export function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_store: S) {
+type WithSelectors<S> = S extends { getState: () => infer T }
+  ? S & {
+      use: <K extends Array<keyof T>>(...args: K) => { [Key in K[number]]: T[Key] }
+      useSetter: () => { [K in keyof T as T[K] extends Function ? K : never]: T[K] }
+    }
+  : never
+function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_store: S) {
   let store = _store as WithSelectors<typeof _store>
-  store.use = {}
-  for (let k of Object.keys(store.getState())) {
-    ;(store.use as any)[k] = () => store(s => s[k as keyof typeof s])
+  store.use = (...key: string[]) => {
+    let selectedStore: Record<string, any> = {}
+    for (let k of key) {
+      selectedStore[k] = store(s => s[k as keyof typeof s])
+    }
+    return selectedStore
   }
-
+  store.useSetter = () => {
+    let selectedStore: Record<string, any> = {}
+    const getStore = store.getState()
+    for (let k in getStore) {
+      if (typeof (getStore as any)[k] == 'function') selectedStore[k] = store(s => s[k as keyof typeof s])
+    }
+    return selectedStore
+  }
   return store
 }
 
-export type TypeSetState<T> = {
+type TypeSetState<T> = {
   [K in keyof T as `set${Capitalize<string & K>}`]: (state: T[K]) => void
 }
-export type TypeSetStateStore<T, M> = {
+type TypeSetStateStore<T, M> = {
   [K in keyof T as `set${Capitalize<string & K>}`]: `set${Capitalize<string & K>}` extends M
     ? unknown
     : (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void
@@ -90,7 +105,6 @@ export type TypeSetStateStore<T, M> = {
 function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
   let defaultSetState = {} as Record<string, (value: any) => void>
   for (const key in initstate) {
-    if (key === 'state') continue
     if (Object.prototype.hasOwnProperty.call(initstate, key)) {
       const keyName = key.charAt(0).toUpperCase() + key.slice(1)
       defaultSetState[`set${keyName}`] = async (valueOrCallback: any) => {
