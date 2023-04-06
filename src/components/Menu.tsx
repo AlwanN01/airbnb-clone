@@ -1,14 +1,12 @@
 'use client'
-import { AiOutlineMenu } from 'react-icons/ai'
-import Avatar from './Avatar'
-import MenuItem from './MenuItem'
 import { useCallback, useEffect, useState } from 'react'
-import { useModalRegister } from '@/hooks/useModalRegister'
-type Props = {}
-function UserMenu({}: Props) {
+type Props = {
+  target: React.ReactNode
+  children: React.ReactNode
+}
+function Menu({ target, children }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [showTransition, setShowTransition] = useState(false)
-  const { setIsOpen: setOpenRegister } = useModalRegister.use('setIsOpen')
   const handleClose = useCallback(() => {
     setShowTransition(false)
     setTimeout(() => setIsOpen(false), 150)
@@ -24,10 +22,7 @@ function UserMenu({}: Props) {
           onClick={() => (isOpen ? handleClose() : setIsOpen(true))}
           onMouseDown={e => e.preventDefault()}
           className='grid-cols cursor-pointer select-none place-items-center gap-3 rounded-full border-[1px] border-neutral-200 p-4 transition hover:shadow-md md:py-1 md:pl-3 md:pr-2'>
-          <AiOutlineMenu />
-          <div className='hidden md:block'>
-            <Avatar />
-          </div>
+          {target}
         </div>
       </div>
       {isOpen && (
@@ -53,13 +48,10 @@ function UserMenu({}: Props) {
           `}
           onClick={handleClose}
           onBlur={handleClose}>
-          <div className='cursor-pointer'>
-            <MenuItem onClick={() => {}} label='Log In' />
-            <MenuItem onClick={() => setOpenRegister(true)} label='Sign Up' />
-          </div>
+          <div className='cursor-pointer'>{children}</div>
         </div>
       )}
     </div>
   )
 }
-export default UserMenu
+export default Menu

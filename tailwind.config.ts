@@ -7,6 +7,9 @@ export const theme: Config['theme'] = {
       csm: '0 0px 3px 1px rgba(0, 0, 0, 0.1), 0 0px 2px -2px rgba(0, 0, 0, 0.1)',
       cmd: '0 0px 6px 1px rgba(0, 0, 0, 0.1), 0 0px 4px -2px rgba(0, 0, 0, 0.1)',
       clg: '0 0px 12px 1px rgba(0, 0, 0, 0.1), 0 0px 6px -2px rgba(0, 0, 0, 0.1)'
+    },
+    backdropBlur: {
+      xs: '2px'
     }
   }
 }

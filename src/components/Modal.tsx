@@ -33,34 +33,21 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(isOpen)
 
-  useEffect(() => {
-    setShowModal(isOpen)
-  }, [isOpen])
+  useEffect(() => setShowModal(isOpen), [isOpen])
 
   const handleClose = useCallback(() => {
-    if (disabled) {
-      return
-    }
-
+    if (disabled) return
     setShowModal(false)
-    setTimeout(() => {
-      onClose()
-    }, 300)
+    setTimeout(() => onClose(), 300)
   }, [onClose, disabled])
 
   const handleSubmit = useCallback(() => {
-    if (disabled) {
-      return
-    }
-
+    if (disabled) return
     onSubmit()
   }, [onSubmit, disabled])
 
   const handleSecondaryAction = useCallback(() => {
-    if (disabled || !secondaryAction) {
-      return
-    }
-
+    if (disabled || !secondaryAction) return
     secondaryAction()
   }, [secondaryAction, disabled])
 
@@ -71,7 +58,7 @@ const Modal: React.FC<ModalProps> = ({
       <div
         onClick={handleClose}
         className='
-          fixed 
+          fixed
           inset-0 
           z-50 
           flex 
@@ -80,7 +67,8 @@ const Modal: React.FC<ModalProps> = ({
           overflow-y-auto 
           overflow-x-hidden 
           bg-neutral-800/70 
-          outline-none
+          outline-none 
+          backdrop-blur-xs
           focus:outline-none
         '>
         <div
