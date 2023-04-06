@@ -83,15 +83,19 @@ const Modal: React.FC<ModalProps> = ({
           focus:outline-none
         '>
         <div
+          ref={e => e?.focus()}
+          tabIndex={0}
+          onBlur={handleClose}
           className='
           relative 
           mx-auto
           my-6
           h-full
           w-full
-          md:h-auto
+          outline-none
+          md:h-auto 
           md:w-4/6 
-          lg:h-auto 
+          lg:h-auto
           lg:w-3/6
           xl:w-2/5
           '>

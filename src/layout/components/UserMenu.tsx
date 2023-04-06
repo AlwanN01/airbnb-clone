@@ -24,7 +24,11 @@ function UserMenu({}: Props) {
         </div>
       </div>
       {isOpen && (
-        <div className='absolute right-0 top-12 z-20 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-cmd md:w-3/4 '>
+        <div
+          ref={e => e?.focus()}
+          tabIndex={0}
+          className='absolute right-0 top-12 z-20 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-cmd focus:outline-none md:w-3/4'
+          onBlur={() => setIsOpen(false)}>
           <div className='cursor-pointer'>
             <MenuItem onClick={() => {}} label='Log In' />
             <MenuItem onClick={() => void (setOpenRegister(true), setIsOpen(false))} label='Sign Up' />
