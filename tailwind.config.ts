@@ -11,9 +11,9 @@ export const theme: Config['theme'] = {
   }
 }
 export const plugins: Config['plugins'] = [
-  plugin(({ addBase, addVariant }) => {
-    addBase({
-      '.grid-col': {
+  plugin(({ addComponents, addVariant }) => {
+    addComponents({
+      '.grid-cols': {
         display: 'grid',
         'grid-auto-flow': 'column'
       }

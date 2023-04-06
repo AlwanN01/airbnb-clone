@@ -1,5 +1,3 @@
-import { memo } from 'react'
-
 interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
   label: string
 }
@@ -10,4 +8,4 @@ function MenuItem({ label, ...args }: Props) {
     </div>
   )
 }
-export default memo(MenuItem)
+export default MenuItem

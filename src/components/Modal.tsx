@@ -69,6 +69,7 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <>
       <div
+        onClick={handleClose}
         className='
           fixed 
           inset-0 
@@ -83,9 +84,7 @@ const Modal: React.FC<ModalProps> = ({
           focus:outline-none
         '>
         <div
-          ref={e => e?.focus()}
-          tabIndex={0}
-          onBlur={handleClose}
+          onClick={e => e.stopPropagation()}
           className='
           relative 
           mx-auto
