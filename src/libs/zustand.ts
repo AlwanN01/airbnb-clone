@@ -108,9 +108,9 @@ function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
     if (Object.prototype.hasOwnProperty.call(initstate, key)) {
       const keyName = key.charAt(0).toUpperCase() + key.slice(1)
       defaultSetState[`set${keyName}`] = async (valueOrCallback: any) => {
-        const callbackValue = await valueOrCallback(get()[key])
-        set({ [key]: typeof valueOrCallback == 'function' ? callbackValue : valueOrCallback }, false, {
-          type: `set${keyName} to ${callbackValue}`
+        const value = typeof valueOrCallback == 'function' ? await valueOrCallback(get()[key]) : valueOrCallback
+        set({ [key]: value }, false, {
+          type: `set${keyName} to ${value}`
         })
       }
     }

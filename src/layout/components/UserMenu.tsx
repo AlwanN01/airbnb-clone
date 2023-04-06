@@ -3,9 +3,11 @@ import { AiOutlineMenu } from 'react-icons/ai'
 import Avatar from './Avatar'
 import MenuItem from './MenuItem'
 import { useState } from 'react'
+import { useModalRegister } from '@/hooks/useModalRegister'
 type Props = {}
 function UserMenu({}: Props) {
   const [isOpen, setIsOpen] = useState(false)
+  const { setIsOpen: setOpenRegister } = useModalRegister.use('setIsOpen')
   return (
     <div className='relative'>
       <div className='flex flex-row items-center gap-3'>
@@ -25,7 +27,7 @@ function UserMenu({}: Props) {
         <div className='absolute right-0 top-12 z-20 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-cmd md:w-3/4 '>
           <div className='cursor-pointer'>
             <MenuItem onClick={() => {}} label='Log In' />
-            <MenuItem onClick={() => {}} label='Sign Up' />
+            <MenuItem onClick={() => void (setOpenRegister(true), setIsOpen(false))} label='Sign Up' />
           </div>
         </div>
       )}
