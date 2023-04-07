@@ -1,5 +1,6 @@
 import { createStore } from '@/libs/zustand'
 import axios from 'axios'
+import { useEffect } from 'react'
 export const initstate = {
   dataForm: { name: '', email: '', password: '' },
   isOpen: false,
@@ -13,7 +14,7 @@ export const useModalRegister = createStore(initstate, (set, get) => ({
       state.dataForm[key] = e.target.value
     }),
   onSubmit: async () => {
-    set({ isLoading: true })
+    set({ isLoading: true, error: null })
     try {
       await axios.post('/api/register', get().dataForm)
     } catch (error) {
