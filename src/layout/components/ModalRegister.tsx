@@ -7,7 +7,7 @@ import { useModalRegister } from '@/hooks/useModalRegister'
 import Modal from '@/components/Modal'
 function ModalRegister() {
   const { isLoading, isOpen } = useModalRegister.use('isLoading', 'isOpen')
-  const { setIsOpen, onSubmit, setDataForm } = useModalRegister.useSetter()
+  const { setIsOpen, onSubmit } = useModalRegister.useFunction()
   return <Modal disabled={isLoading} isOpen={isOpen} title='Register' actionLabel='Continue' onClose={() => setIsOpen(false)} onSubmit={onSubmit} />
 }
 export default ModalRegister

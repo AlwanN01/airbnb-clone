@@ -5,14 +5,15 @@ import { immer } from 'zustand/middleware/immer'
 import { produce, type Immutable, type Draft } from 'immer'
 
 export type SetState<State> = (
-  nextStateOrUpdater: State | Partial<State> | ((state: Draft<State>) => void),
-  shouldReplace?: boolean | undefined,
-  action?: string | { type: unknown } | undefined
+  nextStateOrUpdater: State | Partial<State> | ((state: Draft<State>) => void)
+  // shouldReplace?: boolean | undefined,
+  // action?: string | { type: unknown } | undefined
 ) => void
 export type HandlerStore<State, Method> = (set: SetState<State>, get: () => State) => Method
 export type ReducerStore<State, Action> = (state: State, action: Action, set: SetState<State>, get: () => State) => Promise<void> | void
 type Options = {
   nameStore?: string
+  devtools?: boolean
   isLogging?: boolean
 }
 
@@ -27,7 +28,7 @@ export function createStore<
   options: Options = {}
 ) {
   handler = handler || (() => ({} as Method))
-  const { nameStore = 'My Store', isLogging = false } = (isOptions(reducerOrOptions) && reducerOrOptions) || options
+  const { nameStore = 'Store', isLogging = false, devtools: _devtools = true } = (isOptions(reducerOrOptions) && reducerOrOptions) || options
   const immerReducer = (reducerOrOptions && !isOptions(reducerOrOptions) && produce(reducerOrOptions)) || (async () => ({}))
   return createSelectors(
     create(
@@ -60,8 +61,11 @@ export function createStore<
           })
         ),
         {
-          name: nameStore,
-          enabled: process.env.NODE_ENV == 'production' ? false : undefined,
+          name:
+            nameStore === 'Store'
+              ? `Store: ${Object.keys(initState).slice(0, 3).join(' | ')} ${Object.keys(initState).length > 3 ? '| ...' : ''}`
+              : nameStore,
+          enabled: _devtools && (process.env.NODE_ENV == 'production' ? false : undefined),
           maxAge: 10,
           stateSanitizer: state => {
             for (const key in state) {
@@ -82,7 +86,7 @@ function isOptions(variable: any): variable is Options {
 type WithSelectors<S> = S extends { getState: () => infer T }
   ? S & {
       use: <K extends Array<keyof T>>(...args: K) => { [Key in K[number]]: T[Key] }
-      useSetter: () => { [K in keyof T as T[K] extends Function ? K : never]: T[K] }
+      useFunction: () => { [K in keyof T as T[K] extends Function ? K : never]: T[K] }
     }
   : never
 function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_store: S) {
@@ -94,7 +98,7 @@ function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_store: S) {
     }
     return selectedStore
   }
-  store.useSetter = () => {
+  store.useFunction = () => {
     let selectedStore: Record<string, any> = {}
     const getStore = store.getState()
     for (let k in getStore) {

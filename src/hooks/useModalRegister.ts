@@ -1,11 +1,10 @@
 import { createStore } from '@/libs/zustand'
 import axios from 'axios'
-import { useEffect } from 'react'
 export const initstate = {
   dataForm: { name: '', email: '', password: '' },
   isOpen: false,
   isLoading: false,
-  error: null as any,
+  error: null as unknown,
   refbnb: null as HTMLDivElement | null
 }
 type Key = keyof typeof initstate.dataForm
