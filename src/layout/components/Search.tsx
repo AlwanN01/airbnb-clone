@@ -1,5 +1,6 @@
 'use client'
 import { BiSearch } from 'react-icons/bi'
+import Menu from '@/components/Menu'
 type Props = {}
 
 function Search({}: Props) {

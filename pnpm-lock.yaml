@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@mantine/hooks':
+    specifier: ^6.0.6
+    version: 6.0.6(react@18.2.0)
   '@types/node':
     specifier: 18.15.11
     version: 18.15.11
@@ -125,6 +128,14 @@ packages:
 
   /@humanwhocodes/object-schema@1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
+    dev: false
+
+  /@mantine/hooks@6.0.6(react@18.2.0):
+    resolution: {integrity: sha512-yGqGIZVgvL33XL+4UbP/BcvH/R5SKJYfrNcKIQY+SZ4y3CP05Q/p0BpjcLUJowKbD+xHaqXnMxE8yGf9KWAZig==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@next/env@13.3.0:
