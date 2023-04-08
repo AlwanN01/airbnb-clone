@@ -59,7 +59,19 @@ export function createStore<
             }
           })
         ),
-        { name: nameStore, enabled: process.env.NODE_ENV == 'production' ? false : undefined }
+        {
+          name: nameStore,
+          enabled: process.env.NODE_ENV == 'production' ? false : undefined,
+          maxAge: 10,
+          stateSanitizer: state => {
+            for (const key in state) {
+              if (state[key] instanceof Element) {
+                return { ...state, [key]: `<<_NODE_ELEMENT_${(state[key] as HTMLElement).nodeName}_>>` }
+              }
+            }
+            return state
+          }
+        }
       )
     )
   )
