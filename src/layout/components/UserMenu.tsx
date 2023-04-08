@@ -24,18 +24,6 @@ function UserMenu({}: Props) {
           <div onClick={() => setIsOpen(true)}>Sign Up </div>
         </Menu.Item>
       </Menu>
-      <Menu>
-        <Menu.Target>
-          <AiOutlineMenu />
-          <div className='hidden md:block'>
-            <Avatar />
-          </div>
-        </Menu.Target>
-        <Menu.Item>
-          <div onClick={() => {}}>Log In</div>
-          <div onClick={() => {}}>Sign Up </div>
-        </Menu.Item>
-      </Menu>
     </div>
   )
 }

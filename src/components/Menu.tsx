@@ -9,7 +9,7 @@ const useMenu = () =>
     (set, get) => ({
       useTransition: () => useEffect(() => void setTimeout(() => set({ showTransition: get().isOpen }), 1), [get().isOpen]),
       handleClose: () => {
-        set({ showTransition: false })
+        setTimeout(() => set({ showTransition: false }), 1)
         setTimeout(() => set({ isOpen: false }), 150)
       }
     }),
@@ -50,7 +50,6 @@ const Item: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (!store) throw new Error('Missing MenuContext.Provider in the tree')
   const { isOpen, showTransition, handleClose, useTransition } = useStore(store)
   useTransition()
-  console.log({ isOpen, showTransition })
   const ref = useClickOutside(() => handleClose())
   if (!isOpen) return null
   return (
