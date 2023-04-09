@@ -1,32 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { useEffect, createContext, useContext, useMemo } from 'react'
 import { createStore } from '@/libs/zustand'
-const menuStore = (open = false) => {
-  return createStore(
-    { isOpen: open, showTransition: false },
-    (set, get) => ({
-      useTransition: () => {
-        const isOpen = get().isOpen
-        useEffect(() => void setTimeout(() => set({ showTransition: isOpen }), 1), [isOpen])
-      },
-      handleClose: () => {
-        set({ showTransition: false })
-        setTimeout(() => set({ isOpen: false }), 150)
-      }
-    }),
-    { devtools: false }
-  )
-}
-type MenuStore = ReturnType<typeof menuStore>
-const MenuContext = createContext<MenuStore | null>(null)
-type Props = {
-  children: [React.ReactElement, React.ReactElement]
-  open?: boolean
-}
+//prettier-ignore
+const createMenuStore = (open = false) => 
+  createStore({ isOpen: open, showTransition: false }, (set, get) => ({
+    useTransition: () => useEffect(() => void setTimeout(() => set({ showTransition: get().isOpen }), 1), [get().isOpen]),
+    handleClose: () => void (set({ showTransition: false }), setTimeout(() => set({ isOpen: false }), 150))
+  }),{ devtools: false })
+const MenuContext = createContext<ReturnType<typeof createMenuStore> | null>(null)
+
+type Props = { children: [React.ReactElement, React.ReactElement]; open?: boolean }
 function Menu({ children, open }: Props) {
-  const store = useMemo(() => menuStore(open), [open])
   return (
-    <MenuContext.Provider value={store}>
+    <MenuContext.Provider value={useMemo(() => createMenuStore(open), [open])}>
       <div className='relative'>{children}</div>
     </MenuContext.Provider>
   )
@@ -40,7 +27,7 @@ const Target: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div
       onClick={() => (isOpen ? handleClose() : setIsOpen(true))}
       onMouseDown={e => isOpen && e.preventDefault()}
-      className='grid-cols cursor-pointer select-none place-items-center gap-3 rounded-full border-[1px] border-neutral-200 p-4 transition hover:shadow-md md:py-1 md:pl-3 md:pr-2'>
+      className='grid-container cursor-pointer select-none place-items-center gap-3 rounded-full border-[1px] border-neutral-200 p-4 transition hover:shadow-md md:py-1 md:pl-3 md:pr-2'>
       {children}
     </div>
   )
@@ -61,11 +48,10 @@ const Item: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           `}
       onClick={handleClose}
       onBlur={handleClose}>
-      <div className='child:cursor-pointer child:px-4 child:py-3 child:transition hover:child:bg-neutral-100'>{children}</div>
+      <div className='child:cursor-pointer child:px-4 child:py-3 child:transition child-hover:bg-neutral-100'>{children}</div>
     </div>
   )
 }
-
 Menu.Target = Target
 Menu.Item = Item
 export default Menu

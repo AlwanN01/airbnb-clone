@@ -16,7 +16,7 @@ export const theme: Config['theme'] = {
 export const plugins: Config['plugins'] = [
   plugin(({ addComponents, addVariant }) => {
     addComponents({
-      '.grid-cols': {
+      '.grid-container': {
         display: 'grid',
         'grid-auto-flow': 'column'
       }
@@ -25,7 +25,6 @@ export const plugins: Config['plugins'] = [
     addVariant('third', '&:nth-child(3)')
     addVariant('fourth', '&:nth-child(4)')
     addVariant('child', '& > *')
-    addVariant('child-hover', '& > *:hover')
     addVariant('child-hover', '& > *:hover')
   })
 ]
