@@ -55,7 +55,7 @@ export function createStore<
               },
               set: setWithLogging,
               get,
-              ...setStateStore<State, keyof Method>(initState, set, get),
+              ...defaultSetState<State, keyof Method>(initState, set, get),
               ...handler!(setWithLogging, get)
             }
           })
@@ -112,18 +112,18 @@ function createSelectors<S extends UseBoundStore<StoreApi<object>>>(_store: S) {
 type TypeSetState<T> = {
   [K in keyof T as `set${Capitalize<string & K>}`]: (state: T[K]) => void
 }
-type TypeSetStateStore<T, M> = {
+type TypeDefaultSetState<T, M> = {
   [K in keyof T as `set${Capitalize<string & K>}`]: `set${Capitalize<string & K>}` extends M
     ? unknown
     : (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void
 }
 
-function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
-  let defaultSetState = {} as Record<string, (value: any) => void>
+function defaultSetState<T extends object, M>(initstate: T, set: any, get: any) {
+  let $defaultSetState = {} as Record<string, (value: any) => void>
   for (const key in initstate) {
     if (Object.prototype.hasOwnProperty.call(initstate, key)) {
       const keyName = key.charAt(0).toUpperCase() + key.slice(1)
-      defaultSetState[`set${keyName}`] = async (valueOrCallback: any) => {
+      $defaultSetState[`set${keyName}`] = async (valueOrCallback: any) => {
         const value = typeof valueOrCallback == 'function' ? await valueOrCallback(get()[key]) : valueOrCallback
         set({ [key]: value }, false, {
           type: `set${keyName} to ${value}`
@@ -131,7 +131,7 @@ function setStateStore<T extends object, M>(initstate: T, set: any, get: any) {
       }
     }
   }
-  return defaultSetState as TypeSetStateStore<T, M>
+  return $defaultSetState as TypeDefaultSetState<T, M>
 }
 
 function extractString(str: string) {
