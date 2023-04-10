@@ -9,7 +9,9 @@ function UserMenu({}: Props) {
 
   return (
     <div className='grid-container place-items-center justify-self-end'>
-      <div ref={setRefbnb} className='hidden cursor-pointer rounded-full px-4 py-3 text-sm font-semibold transition hover:bg-neutral-100 md:block'>
+      <div
+        ref={setRefbnb}
+        className='hidden w-max cursor-pointer rounded-full px-4 py-3 text-sm font-semibold transition hover:bg-neutral-100 md:block'>
         Airbnb your home
       </div>
       <Menu>

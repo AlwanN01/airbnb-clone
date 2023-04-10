@@ -9,7 +9,7 @@ export default function Navbar({}: Props) {
     <div className='fixed z-10 w-full bg-white shadow-sm'>
       <div className='border-b-[1px] py-4'>
         <Container>
-          <div className='grid-container auto-cols-[1fr_min-content] items-center gap-3 md:auto-cols-[minmax(max-content,1fr)] md:gap-0'>
+          <div className='grid-container auto-cols-[1fr_min-content] items-center gap-3 md:auto-cols-[1fr_max-content_1fr] md:gap-0'>
             <Logo />
             <Search />
             <UserMenu />
