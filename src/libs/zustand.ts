@@ -115,7 +115,7 @@ type TypeSetState<T> = {
 type TypeDefaultSetState<T, M> = {
   [K in keyof T as `set${Capitalize<string & K>}`]: `set${Capitalize<string & K>}` extends M
     ? unknown
-    : (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void
+    : (state: T[K] | ((prevState: T[K]) => T[K] | Promise<T[K]>)) => void | Promise<void>
 }
 
 function defaultSetState<T extends object, M>(initstate: T, set: any, get: any) {

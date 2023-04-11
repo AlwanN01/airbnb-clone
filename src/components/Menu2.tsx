@@ -20,7 +20,7 @@ function Menu({ children, open = false }: Props) {
     setShowTransition(false)
     setTimeout(() => setIsOpen(false), 150)
   }, [])
-  const state = { isOpen, setIsOpen, showTransition, setShowTransition, handleClose }
+  const state: MenuState = { isOpen, setIsOpen, showTransition, setShowTransition, handleClose }
   return (
     <MenuStateContext.Provider value={state}>
       <div className='relative'>{children}</div>

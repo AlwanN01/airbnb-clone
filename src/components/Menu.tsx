@@ -1,11 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { useEffect, createContext, useContext, useMemo } from 'react'
 import { createStore } from '@/libs/zustand'
 //prettier-ignore
 const createMenuStore = (open = false) => 
   createStore({ isOpen: open, showTransition: false }, (set, get) => ({
-    useTransition: () => useEffect(() => void setTimeout(() => set({ showTransition: get().isOpen }), 1), [get().isOpen]),
     handleClose: () => void (set({ showTransition: false }), setTimeout(() => set({ isOpen: false }), 150))
   }),{ devtools: false })
 const MenuContext = createContext<ReturnType<typeof createMenuStore> | null>(null)
@@ -35,8 +33,8 @@ const Target: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const Item: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const useStore = useContext(MenuContext)
   if (!useStore) throw new Error('Missing MenuContext.Provider in the tree')
-  const { isOpen, showTransition, handleClose, useTransition } = useStore()
-  useTransition()
+  const { isOpen, showTransition, handleClose, setShowTransition } = useStore()
+  useEffect(() => void setTimeout(() => setShowTransition(isOpen), 1), [isOpen, setShowTransition])
   if (!isOpen) return null
   return (
     <div
