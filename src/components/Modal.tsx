@@ -52,11 +52,11 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      onClick={handleClose}
+      onMouseDown={handleClose}
       className='fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden 
         bg-neutral-800/70 outline-none backdrop-blur-xs focus:outline-none'>
       <div
-        onClick={e => e.stopPropagation()}
+        onMouseDown={e => e.stopPropagation()}
         className='relative mx-auto my-6 h-full w-full outline-none
           md:h-auto md:w-4/6 lg:h-auto lg:w-3/6 xl:w-2/5 '>
         <section
