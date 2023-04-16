@@ -1,6 +1,6 @@
 'use client'
 import { create, type StoreApi, type UseBoundStore } from 'zustand'
-import { combine, devtools } from 'zustand/middleware'
+import { combine, devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { produce, type Immutable, type Draft } from 'immer'
 
@@ -32,50 +32,52 @@ export function createStore<
   const immerReducer = (reducerOrOptions && !isOptions(reducerOrOptions) && produce(reducerOrOptions)) || (async () => ({}))
   return createSelectors(
     create(
-      devtools(
-        immer(
-          combine(initState, (set, get) => {
-            const setWithLogging = (nextStateOrUpdater: Parameters<typeof set>[0]) => {
-              const key = Object.keys(nextStateOrUpdater)
-              const values = Object.values(nextStateOrUpdater)
-              return set(nextStateOrUpdater, false, {
-                type:
-                  key.length == 1
-                    ? `set${key[0].charAt(0).toUpperCase() + key[0].slice(1)} to ${values[0]}`
-                    : typeof nextStateOrUpdater == 'function'
-                    ? `set: ${extractString(nextStateOrUpdater.toString())}`
-                    : `set: ${key.join(' | ')}`
-              })
-            }
-            return {
-              dispatch: async (action: Action) => {
-                isLogging && console.log('old State', get())
-                set(reducerOrOptions ? await immerReducer!(get() as unknown as Immutable<State>, action, set, get) : state => state, false, action)
-                isLogging && console.log('new State', get())
-              },
-              set: setWithLogging,
-              get,
-              ...defaultSetState<State, keyof Method>(initState, set, get),
-              ...handler!(setWithLogging, get)
-            }
-          })
-        ),
-        {
-          name:
-            nameStore === 'Store'
-              ? `Store: ${Object.keys(initState).slice(0, 3).join(' | ')} ${Object.keys(initState).length > 3 ? '| ...' : ''}`
-              : nameStore,
-          enabled: _devtools && (process.env.NODE_ENV == 'production' ? false : undefined),
-          maxAge: 10,
-          stateSanitizer: state => {
-            for (const key in state) {
-              if (state[key] instanceof Element) {
-                return { ...state, [key]: `<<_NODE_ELEMENT_${(state[key] as HTMLElement).nodeName}_>>` }
+      subscribeWithSelector(
+        devtools(
+          immer(
+            combine(initState, (set, get) => {
+              const setWithLogging = (nextStateOrUpdater: Parameters<typeof set>[0]) => {
+                const key = Object.keys(nextStateOrUpdater)
+                const values = Object.values(nextStateOrUpdater)
+                return set(nextStateOrUpdater, false, {
+                  type:
+                    key.length == 1
+                      ? `set${key[0].charAt(0).toUpperCase() + key[0].slice(1)} to ${values[0]}`
+                      : typeof nextStateOrUpdater == 'function'
+                      ? `set: ${extractString(nextStateOrUpdater.toString())}`
+                      : `set: ${key.join(' | ')}`
+                })
               }
+              return {
+                dispatch: async (action: Action) => {
+                  isLogging && console.log('old State', get())
+                  set(reducerOrOptions ? await immerReducer!(get() as unknown as Immutable<State>, action, set, get) : state => state, false, action)
+                  isLogging && console.log('new State', get())
+                },
+                set: setWithLogging,
+                get,
+                ...defaultSetState<State, keyof Method>(initState, set, get),
+                ...handler!(setWithLogging, get)
+              }
+            })
+          ),
+          {
+            name:
+              nameStore === 'Store'
+                ? `Store: ${Object.keys(initState).slice(0, 3).join(' | ')} ${Object.keys(initState).length > 3 ? '| ...' : ''}`
+                : nameStore,
+            enabled: _devtools && (process.env.NODE_ENV == 'production' ? false : undefined),
+            maxAge: 10,
+            stateSanitizer: state => {
+              for (const key in state) {
+                if (state[key] instanceof Element) {
+                  return { ...state, [key]: `<<_NODE_ELEMENT_${(state[key] as HTMLElement).nodeName}_>>` }
+                }
+              }
+              return state
             }
-            return state
           }
-        }
+        )
       )
     )
   )

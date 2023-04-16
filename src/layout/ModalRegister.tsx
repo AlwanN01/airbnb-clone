@@ -7,16 +7,23 @@ import { useModalRegister } from '@/hooks/useModalRegister'
 import Modal from '@/components/Modal'
 import Heading from './components/Heading'
 import Input from '@/components/Input'
-function ModalRegister() {
-  const { isLoading, isOpen } = useModalRegister.use('isLoading', 'isOpen')
-  const { setIsOpen, onSubmit } = useModalRegister.useFunction()
+
+export function ModalRegister() {
+  const { isLoading, isOpen, setIsOpen, onSubmit } = useModalRegister.use('isLoading', 'isOpen', 'setIsOpen', 'onSubmit')
   return (
     <Modal disabled={isLoading} isOpen={isOpen} title='Register' actionLabel='Continue' onClose={() => setIsOpen(false)} onSubmit={onSubmit}>
-      <section className='grid gap-4'>
-        <Heading title='Welcome to Airbnb' subTitle='Create an account' />
-        <Input label='Email' />
-      </section>
+      <ModalBody />
     </Modal>
   )
 }
-export default ModalRegister
+function ModalBody() {
+  const { getInputProps } = useModalRegister.use('getInputProps', 'dataForm')
+  return (
+    <section className='grid gap-4'>
+      <Heading title='Welcome to Airbnb' subTitle='Create an account' />
+      <Input label='User Name' type='text' {...getInputProps('name')} autoComplete='name' />
+      <Input label='Email' type='email' {...getInputProps('email')} autoComplete='on' />
+      <Input label='Password' type='password' {...getInputProps('password')} />
+    </section>
+  )
+}

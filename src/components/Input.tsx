@@ -2,21 +2,23 @@
 
 import { BiDollar } from 'react-icons/bi'
 
-interface Props extends React.HTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   formatPrice?: boolean
-  errors?: unknown
-  label: string
+  isError?: boolean
+  errMsg?: string
+  label?: string
 }
-function Input({ id, formatPrice, label, ...args }: Props) {
+function Input({ id, formatPrice, label, isError, errMsg, className, ...args }: InputProps) {
   return (
     <div className='relative w-full'>
       {formatPrice && <BiDollar size={24} className='absolute left-2 top-5 text-neutral-700' />}
       <input
-        id={id || label}
         {...args}
-        className={`peer w-full rounded-md border-2 border-neutral-300 bg-white p-4 pt-6 font-light outline-none
-                    transition focus:border-black disabled:cursor-not-allowed disabled:opacity-70
-                    ${formatPrice ? 'pl-9' : 'pl-4'}`}
+        id={id || label}
+        className={`peer w-full rounded-md border-2  bg-white p-4 pt-6 font-light
+                    transition focus:border-black disabled:cursor-not-allowed disabled:opacity-70 ${className ?? ''}
+                    ${formatPrice ? 'pl-9' : 'pl-4'}
+                    ${isError ? 'border-rose-500' : 'border-neutral-300'}`}
         placeholder=' '
       />
       <label
@@ -30,6 +32,7 @@ function Input({ id, formatPrice, label, ...args }: Props) {
           peer-focus:scale-75`}>
         {label}
       </label>
+      {isError && <span className='mx-2 -mt-3 text-sm font-light text-rose-500'>{errMsg}</span>}
     </div>
   )
 }
