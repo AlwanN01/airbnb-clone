@@ -2,6 +2,7 @@ import { InputProps } from '@/components/Input'
 import { fieldForm, validate, objectMap } from '@/helpers'
 import { createStore } from '@/libs/zustand'
 import axios from 'axios'
+import { toast } from 'react-hot-toast'
 
 export const initstate = {
   dataForm: {
@@ -40,7 +41,7 @@ export const useModalRegister = createStore(initstate, (set, get) => ({
       const data = objectMap(form, val => val.value)
       await axios.post('/api/register', data)
     } catch (error) {
-      console.log(error)
+      if (error instanceof Error) toast.error(error.message)
       set({ error })
     } finally {
       set({ isLoading: false })
