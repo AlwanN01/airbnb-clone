@@ -57,8 +57,8 @@ const Modal: React.FC<ModalProps> = ({
         bg-neutral-800/70 outline-none backdrop-blur-xs focus:outline-none'>
       <div
         onMouseDown={e => e.stopPropagation()}
-        className='relative mx-auto my-6 h-full w-full outline-none
-          md:h-auto md:w-4/6 lg:h-auto lg:w-3/6 xl:w-2/5 '>
+        className='relative mx-auto my-6 h-full max-h-screen w-full
+          outline-none md:h-auto md:w-4/6 lg:h-auto lg:w-3/6 xl:w-2/5'>
         <section
           aria-label='Modal Content'
           className={`translate h-full duration-300
